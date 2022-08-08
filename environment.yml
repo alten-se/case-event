@@ -1,0 +1,11 @@
+name: case_event
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.3
+  - tensorflow=2
+  - keras
+platforms:
+  - linux-64
+  - win-64
