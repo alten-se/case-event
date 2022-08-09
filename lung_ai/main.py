@@ -4,13 +4,16 @@ import os
 
 #current_dir = os.getcwd()
 #    return current_dir + "\\" + path + "\\" + filename
+my_folder = os.path.pardir(__file__)
+data_folder = "Data" 
+labels_path = os.path.join(
+    my_folder, data_folder, "IBCHI_Challenge_diagnosis_v02.csv"
+)
+wav_path = os.path.join(
+    my_folder, data_folder, "data"
+)
 
-path_root = os.getcwd() + '\\' + 'HE' + '\\' + 'Data'
-path_wav_files = path_root + '\\' + 'ICBHI_final_database' + '\\'
-path_patient_disease_list = path_root + \
-    '\\' + 'IBCHI_Challenge_diagnosis_v02.csv'
-
-X, y = InstantiateAttributes(path_wav_files, path_patient_disease_list)
+X, y = InstantiateAttributes(wav_path, labels_path)
 
 print(X.ndim)
 # 1
