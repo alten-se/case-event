@@ -4,7 +4,7 @@ from Augmentation import add_noise, shift, stretch
 
 
 def InstantiateAttributes(dir_):
-	'''
+    '''
 	    Extract feature from the Sound data. We extracted Mel-frequency cepstral coefficients( spectral
 	    features ), from the audio data. Augmentation of sound data by adding Noise, streaching and shifting
 	    is also implemented here. 40 features are extracted from each audio data and used to train the model.
@@ -13,7 +13,7 @@ def InstantiateAttributes(dir_):
 	    Returns:
 	        X_: Array of features extracted from the sound file.
 	        y_: Array of target Labels.
-	'''
+    '''
     X_=[]
     y_=[]
     COPD=[]
