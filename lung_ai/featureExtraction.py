@@ -53,15 +53,13 @@ def InstantiateAttributes(dir_, path_patient_disease_list):
             data_x, sampling_rate = librosa.load(sound_path, res_type='kaiser_fast')
             mfccs = librosa.feature.mfcc(y=data_x, sr=sampling_rate, n_mfcc=40)
 
-            x.append(np.mean(mfccs, axis=1))
-            y.append(current_disease)
-
+            no_op = lambda x : x
             noise_mod = functools.partial(add_noise, x=0.005)
             shift_mod = functools.partial(shift, x=1600)
             stretch_mod1 = functools.partial(stretch, rate=1.2)
             stretch_mod2 = functools.partial(stretch, rate=0.8)
 
-            augmentations = [noise_mod, shift_mod, stretch_mod1, stretch_mod2]
+            augmentations = [no_op, noise_mod, shift_mod, stretch_mod1, stretch_mod2]
 
             for aug in augmentations:
                 modded_data = aug(data_x)
