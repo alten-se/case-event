@@ -2,10 +2,11 @@ import numpy as np
 import librosa
 from Augmentation import add_noise, shift, stretch
 
+
 def InstantiateAttributes(dir_):
 	'''
-	    Extract feature from the Sound data. We extracted Mel-frequency cepstral coefficients( spectral 
-	    features ), from the audio data. Augmentation of sound data by adding Noise, streaching and shifting 
+	    Extract feature from the Sound data. We extracted Mel-frequency cepstral coefficients( spectral
+	    features ), from the audio data. Augmentation of sound data by adding Noise, streaching and shifting
 	    is also implemented here. 40 features are extracted from each audio data and used to train the model.
 	    Args:
 	        dir_: Input directory to the Sound input file.
@@ -19,10 +20,10 @@ def InstantiateAttributes(dir_):
     copd_count=0
     for soundDir in (os.listdir(dir_)):
         if soundDir[-3:]=='wav'and soundDir[:3]!='103'and soundDir[:3]!='108'and soundDir[:3]!='115':
-        	#data_x, sampling_rate = librosa.load(dir_+soundDir,res_type='kaiser_fast')
-            #mfccs = np.mean(librosa.feature.mfcc(y=data_x, sr=sampling_rate, n_mfcc=40).T,axis=0) 
-            #X_.append(mfccs)
-            #y_.append(list(data[data['patient_id']==int(soundDir[:3])]['disease'])[0])
+        	# data_x, sampling_rate = librosa.load(dir_+soundDir,res_type='kaiser_fast')
+            # mfccs = np.mean(librosa.feature.mfcc(y=data_x, sr=sampling_rate, n_mfcc=40).T,axis=0) 
+            # X_.append(mfccs)
+            # y_.append(list(data[data['patient_id']==int(soundDir[:3])]['disease'])[0])
 
             p = list(data[data['patient_id']==int(soundDir[:3])]['disease'])[0]
             if (p=='COPD'):
