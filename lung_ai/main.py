@@ -5,11 +5,12 @@ import os
 #current_dir = os.getcwd()
 #    return current_dir + "\\" + path + "\\" + filename
 
-path_root = os.getcwd() + '\\' +'HE' + '\\' + 'Data' 
+path_root = os.getcwd() + '\\' + 'HE' + '\\' + 'Data'
 path_wav_files = path_root + '\\' + 'ICBHI_final_database' + '\\'
-path_patient_disease_list = path_root + '\\' + 'IBCHI_Challenge_diagnosis_v02.csv' 
+path_patient_disease_list = path_root + \
+    '\\' + 'IBCHI_Challenge_diagnosis_v02.csv'
 
-X, y = InstantiateAttributes(path_wav_files,path_patient_disease_list)
+X, y = InstantiateAttributes(path_wav_files, path_patient_disease_list)
 
 print(X.ndim)
 # 1
