@@ -1,0 +1,3 @@
+#COPD: Chronic Obstructive Pulmonary Disease
+#LRTI: Lower Respiratory Tract Infection
+#URTI: Upper Respiratory Tract Infection
