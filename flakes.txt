@@ -1,0 +1,32 @@
+lung_ai/train.py:16:1: E999 TabError: inconsistent use of tabs and spaces in indentation
+lung_ai/Augmentation.py:1:19: E231 missing whitespace after ','
+lung_ai/Augmentation.py:2:13: F821 undefined name 'np'
+lung_ai/Augmentation.py:6:1: E302 expected 2 blank lines, found 1
+lung_ai/Augmentation.py:6:15: E231 missing whitespace after ','
+lung_ai/Augmentation.py:7:12: F821 undefined name 'np'
+lung_ai/Augmentation.py:9:1: E302 expected 2 blank lines, found 1
+lung_ai/Augmentation.py:10:12: F821 undefined name 'librosa'
+lung_ai/Augmentation.py:12:1: W391 blank line at end of file
+lung_ai/evaluate.py:16:36: E999 IndentationError: unindent does not match any outer indentation level
+lung_ai/validate.py:4:1: E302 expected 2 blank lines, found 1
+lung_ai/validate.py:5:1: W191 indentation contains tabs
+lung_ai/validate.py:6:1: W191 indentation contains tabs
+lung_ai/validate.py:6:2: E101 indentation contains mixed spaces and tabs
+lung_ai/validate.py:7:1: W191 indentation contains tabs
+lung_ai/validate.py:7:2: E101 indentation contains mixed spaces and tabs
+lung_ai/validate.py:8:1: W191 indentation contains tabs
+lung_ai/validate.py:8:2: E101 indentation contains mixed spaces and tabs
+lung_ai/validate.py:10:1: W191 indentation contains tabs
+lung_ai/validate.py:10:2: E101 indentation contains mixed spaces and tabs
+lung_ai/validate.py:11:1: W191 indentation contains tabs
+lung_ai/validate.py:12:1: W191 indentation contains tabs
+lung_ai/validate.py:14:1: W191 indentation contains tabs
+lung_ai/validate.py:15:1: W191 indentation contains tabs
+lung_ai/validate.py:15:53: E231 missing whitespace after ','
+lung_ai/validate.py:16:1: W191 indentation contains tabs
+lung_ai/validate.py:16:16: E225 missing whitespace around operator
+lung_ai/validate.py:16:36: E231 missing whitespace after ','
+lung_ai/validate.py:18:1: W191 indentation contains tabs
+lung_ai/validate.py:18:21: W292 no newline at end of file
+lung_ai/featureExtraction.py:16:9: E999 IndentationError: unindent does not match any outer indentation level
+lung_ai/model.py:13:4: E999 IndentationError: unexpected indent
