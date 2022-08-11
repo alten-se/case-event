@@ -1,7 +1,8 @@
 from typing import Tuple
 
 from keras.models import Sequential
-from keras.layers import Dense, Dropout # "CudNNLSTM" is GPU optimized variant of "LTSM"
+# "CudNNLSTM" is GPU optimized variant of "LTSM"
+from keras.layers import Dense, Dropout
 import tensorflow as tf
 
 
@@ -14,7 +15,8 @@ else:
     print("no cuda enbaled gpu, falling back to CPU")
     from keras.layers import LSTM
 
-def rnn_model(shape: Tuple[int, int]) -> Sequential:
+
+def rnn_model(input_shape: Tuple[int, int], n_classes: int) -> Sequential:
     """_summary_
 
     Args:
@@ -24,12 +26,13 @@ def rnn_model(shape: Tuple[int, int]) -> Sequential:
         rnn_model: tensor model
     """
     model = Sequential()
-    time_steps, features = shape
 
     model.add(LSTM(
-    128,
-    input_shape=(time_steps, features),
-    return_sequences=True))
+        128,
+        input_shape=input_shape,
+        return_sequences=True
+    ))
+
     model.add(Dropout(0.2))
 
     model.add(LSTM(128, return_sequences=True))
@@ -40,14 +43,16 @@ def rnn_model(shape: Tuple[int, int]) -> Sequential:
 
     model.add(LSTM(128, return_sequences=True))
     model.add(Dropout(0.2))
-    
+
     model.add(LSTM(128, return_sequences=False))
     model.add(Dropout(0.2))
 
-    model.add(Dense(32, activation="relu")) 
+    model.add(Dense(32, activation="relu"))
     model.add(Dropout(0.2))
 
-    n_disease_classes = 7
-    model.add(Dense(n_disease_classes, activation="softmax"))
-    
+    model.add(Dense(32, activation="relu"))
+    model.add(Dropout(0.2))
+
+    model.add(Dense(n_classes, activation="softmax"))
+
     return model
