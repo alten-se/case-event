@@ -1,9 +1,11 @@
+from operator import imod
 from train import *
 from featureExtraction import *
 import os
 
-#current_dir = os.getcwd()
-#    return current_dir + "\\" + path + "\\" + filename
+from model import rnn_model
+from train import train
+
 my_folder = os.path.dirname(__file__)
 data_folder = "Data" 
 labels_path = os.path.join(
@@ -14,7 +16,9 @@ wav_path = os.path.join(
 )
 
 x, y = InstantiateAttributes(wav_path, labels_path)
-
 print("x shape:", x.shape, x.size)
 
-model_history = trainModel(x, y)
+model = rnn_model(input_shape=x.shape[1:], n_classes=7)
+trained_model = train(x, y, model)
+
+print("Done!")
