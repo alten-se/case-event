@@ -1,6 +1,6 @@
 from operator import imod
 from train import *
-from featureExtraction import *
+from data_extraction import load_data
 import os
 
 from model import rnn_model
@@ -15,10 +15,14 @@ wav_path = os.path.join(
     my_folder, data_folder, "data"+os.path.sep
 )
 
-x, y = InstantiateAttributes(wav_path, labels_path)
+x, y, label_dict = load_data(wav_path, labels_path)
 print("x shape:", x.shape, x.size)
 
-model = rnn_model(input_shape=x.shape[1:], n_classes=7)
+print("## lables info")
+for k, v in label_dict.items():
+    print("- condition:", k, ", class_id:", v, ", count:", (y==v).sum())
+
+model = rnn_model(input_shape=x.shape[1:], n_classes=len(label_dict))
 trained_model = train(x, y, model)
 
 print("Done!")
