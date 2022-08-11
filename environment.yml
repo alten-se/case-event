@@ -3,10 +3,15 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - python=3.3
+  - python=3.9
   - tensorflow=2
+  - pandas
   - keras
   - flake8
+  - librosa
+  - matplotlib
+  - pydub
+  - ffmpeg
 platforms:
   - linux-64
   - win-64
