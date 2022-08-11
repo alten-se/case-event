@@ -1,4 +1,3 @@
-from llvmlite.ir.values import FunctionAttributes
 import numpy as np
 import librosa
 from Augmentation import add_noise, shift, stretch
@@ -26,29 +25,45 @@ def InstantiateAttributes(dir_, path_patient_disease_list):
 
     patient_disease_list = pd.read_csv(path_patient_disease_list, sep=";")
 
+    disease_dict = {}
+    disease_counter = 0
+
     def get_disease(id: str) -> str:
         current_row = patient_disease_list.loc[patient_disease_list['patient_id'] == int(id)]
         return current_row['disease'].values[0]
             
-    files = (f for f in os.listdir(dir_)[:20] if f[-3:] =="wav")
+    files = [f for f in os.listdir(dir_) if f[-3:] =="wav"]
     
+    def append_data(data, labels, mfccs, label):
+        if mfccs.shape[1] < 862:
+            print("Warning discared a sound_entry due to tts small size")
+            return
+        data.append(mfccs[:, :862].T) # data tensor must have dims [batch, timesteps, feature]
+        labels.append(label)
+        
+            
+
     for sound_file in files:
         
         patient_id = sound_file[:3] 
         sound_path = os.path.join(dir_, sound_file)
         current_disease = get_disease(patient_id)
 
+
         if current_disease.upper() in ("LTRI", "ASTHMA"):
             # Do not use "Asthma" and "LRTI" since there are very few instances of those.
             continue
+
+        if current_disease not in disease_dict.keys():
+            disease_dict[current_disease] = disease_counter
+            disease_counter += 1
 
         if (current_disease == 'COPD'):
             if sum([patient_id==p for p in copd_patients]) < 2:
                 data_x, sampling_rate = librosa.load(sound_path, res_type='kaiser_fast')
                 mfccs = librosa.feature.mfcc(y=data_x, sr=sampling_rate, n_mfcc=40)
                 copd_patients.append(patient_id)
-                x.append(np.mean(mfccs, axis=1))
-                y.append(current_disease)
+                append_data(x, y, mfccs, disease_dict[current_disease])
         else:
             data_x, sampling_rate = librosa.load(sound_path, res_type='kaiser_fast')
             mfccs = librosa.feature.mfcc(y=data_x, sr=sampling_rate, n_mfcc=40)
@@ -59,13 +74,19 @@ def InstantiateAttributes(dir_, path_patient_disease_list):
             stretch_mod1 = functools.partial(stretch, rate=1.2)
             stretch_mod2 = functools.partial(stretch, rate=0.8)
 
-            augmentations = [no_op, noise_mod, shift_mod, stretch_mod1, stretch_mod2]
+            augmentations = [no_op, noise_mod, shift_mod] # , stretch_mod1, stretch_mod2]
 
             for aug in augmentations:
                 modded_data = aug(data_x)
                 modded_mfccs = librosa.feature.mfcc(y=modded_data, sr=sampling_rate, n_mfcc=40)
-                x.append(np.mean(modded_mfccs, axis=1))
-                y.append(current_disease)
+                append_data(x, y, modded_mfccs, disease_dict[current_disease])
+
+    # dbg
+    test = [(item[0].shape, item[1]) for item in zip(x, y)]
+    for item in test[:10]:
+        print(item)
+
+    print(disease_dict)
 
     x = np.array(x)
     y = np.array(y)
