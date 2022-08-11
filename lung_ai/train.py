@@ -1,7 +1,10 @@
 from model import rnn_model
 import tensorflow as tf
+from numpy import ndarray
+from keras.models import Sequential
 
-def trainModel(x, y):
+
+def train(x: ndarray, y:ndarray, model: Sequential) -> Sequential:
     '''
         Training the Neural Network model against the data.
         Args:
@@ -10,12 +13,7 @@ def trainModel(x, y):
 
         Returns: Save Trained model weights.
     '''
-    # batch_size = X.shape[0]
-    # time_steps = X.shape[1]
-    # data_dim = X.shape[2]
-    (batch_size, time_steps, features) = x.shape
-
-    model = rnn_model((time_steps, features))
+    batch_size = x.shape[0]
 
     opt = tf.keras.optimizers.Adam(learning_rate=1e-3, decay=1e-5)
 
@@ -25,16 +23,7 @@ def trainModel(x, y):
         metrics=["accuracy"]
     )
 
-    # mc = ModelCheckpoint(
-    #     'best_model.h5',
-    #     monitor='val_acc',
-    #     mode='auto',
-    #     verbose=0,
-    #     save_best_only=True)
-
-
-
-    split_index = (batch_size * 1) // 3  
+    split_index = (batch_size * 1) // 3  # use a 1/3 of data for validation
 
     train_set = x[split_index:], y[split_index:]
     validate_set = x[:split_index], y[:split_index]
