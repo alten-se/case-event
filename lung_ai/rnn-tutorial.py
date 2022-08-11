@@ -4,7 +4,7 @@ link = https://www.youtube.com/watch?v=BSpXCRTOLJA
 """
 import tensorflow as tf
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, LSTM  # CudNNLSTM
+from keras.layers import Dense, Dropout, LTSM # "CudNNLSTM" is GPU optimized variant of "LTSM"
 
 mnist = tf.keras.datasets.mnist
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -16,14 +16,14 @@ model = Sequential()
 
 (time_steps, features) = x_train.shape[1:]
 
-model.add(LSTM(
+model.add(LTSM(
     128,
     input_shape=(x_train.shape[1:]),
     return_sequences=True))
 
 model.add(Dropout(0.2))
 
-model.add(LSTM(128))
+model.add(LTSM(128))
 model.add(Dropout(0.2))
 
 model.add(Dense(32, activation="relu"))
@@ -41,4 +41,4 @@ model.compile(
 
 model.fit(x_train, y_train, epochs=3, validation_data=(x_test, y_test))
 
-print("Helo")
+print("training done")
