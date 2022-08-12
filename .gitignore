@@ -2,6 +2,7 @@
 data/
 *.zip
 trained_models/
+out/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
