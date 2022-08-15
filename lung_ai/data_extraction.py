@@ -1,6 +1,6 @@
 import numpy as np
 import librosa
-from Augmentation import add_noise, shift, stretch
+from lung_ai.augmentation import add_noise, shift, stretch
 import os
 import pandas as pd
 import functools
