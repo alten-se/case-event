@@ -23,12 +23,13 @@ def train(x: ndarray, y:ndarray, model: Sequential) -> Sequential:
         metrics=["accuracy"]
     )
 
+    # TODO k-fold cross validation, train diffrent instaseces using diffrent selections for train/validate set
     split_index = (batch_size * 1) // 3  # use a 1/3 of data for validation
 
     train_set = x[split_index:], y[split_index:]
     validate_set = x[:split_index], y[:split_index]
 
-    model.fit(train_set[0], train_set[1], epochs=10, validation_data=validate_set)
+    model.fit(train_set[0], train_set[1], epochs=300, validation_data=validate_set)
 
 
     return model

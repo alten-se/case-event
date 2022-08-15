@@ -33,6 +33,7 @@ def load_data(dir_, path_patient_disease_list):
         return current_row['disease'].values[0]
             
     files = [f for f in os.listdir(dir_) if f[-3:] =="wav"]
+    print("Extracting data from n files:",len(files))
     
     def append_data(data, labels, mfccs, label):
         min_size = 700
@@ -47,7 +48,7 @@ def load_data(dir_, path_patient_disease_list):
         sound_path = os.path.join(dir_, sound_file)
         current_disease = get_disease(patient_id)
 
-        if current_disease.upper() in ("LTRI", "ASTHMA"):
+        if current_disease.upper() in ("LRTI", "ASTHMA"):  # TODO Bronchictasis 
             # Do not use "Asthma" and "LRTI" since there are very few instances of those.
             continue
 
