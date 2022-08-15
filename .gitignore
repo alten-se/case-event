@@ -2,6 +2,7 @@
 data/
 *.zip
 trained_models/
+lung_ai/Data/out/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

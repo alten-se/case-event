@@ -1,12 +1,12 @@
 import numpy as np
 import librosa
-from Augmentation import add_noise, shift, stretch
+from lung_ai.augmentation import add_noise, shift, stretch
 import os
 import pandas as pd
 import functools
 
 
-def InstantiateAttributes(dir_, path_patient_disease_list):
+def load_data(dir_, path_patient_disease_list):
     """Extract feature from the Sound data. We extracted Mel-frequency cepstral coefficients( spectral
         features ), from the audio data. Augmentation of sound data by adding Noise, streaching and shifting
         is also implemented here. 40 features are extracted from each audio data and used to train the model.
@@ -33,24 +33,22 @@ def InstantiateAttributes(dir_, path_patient_disease_list):
         return current_row['disease'].values[0]
             
     files = [f for f in os.listdir(dir_) if f[-3:] =="wav"]
+    print("Extracting data from n files:",len(files))
     
     def append_data(data, labels, mfccs, label):
-        if mfccs.shape[1] < 862:
-            print("Warning discared a sound_entry due to tts small size")
+        min_size = 700
+        if mfccs.shape[1] < min_size:
+            print("Warning discared a sound_entry due to tts small size:", mfccs.shape[1])
             return
-        data.append(mfccs[:, :862].T) # data tensor must have dims [batch, timesteps, feature]
+        data.append(mfccs[:, :min_size].T)
         labels.append(label)
-        
-            
 
     for sound_file in files:
-        
         patient_id = sound_file[:3] 
         sound_path = os.path.join(dir_, sound_file)
         current_disease = get_disease(patient_id)
 
-
-        if current_disease.upper() in ("LTRI", "ASTHMA"):
+        if current_disease.upper() in ("LRTI", "ASTHMA"):  # TODO Bronchictasis 
             # Do not use "Asthma" and "LRTI" since there are very few instances of those.
             continue
 
@@ -68,27 +66,18 @@ def InstantiateAttributes(dir_, path_patient_disease_list):
             data_x, sampling_rate = librosa.load(sound_path, res_type='kaiser_fast')
             mfccs = librosa.feature.mfcc(y=data_x, sr=sampling_rate, n_mfcc=40)
 
-            no_op = lambda x : x
+            no_mod = lambda x : x
             noise_mod = functools.partial(add_noise, x=0.005)
             shift_mod = functools.partial(shift, x=1600)
             stretch_mod1 = functools.partial(stretch, rate=1.2)
-            stretch_mod2 = functools.partial(stretch, rate=0.8)
+            stretch_mod2 = functools.partial(stretch, rate=0.9)
 
-            augmentations = [no_op, noise_mod, shift_mod] # , stretch_mod1, stretch_mod2]
-
-            for aug in augmentations:
+            for aug in [no_mod, noise_mod, shift_mod, stretch_mod1, stretch_mod2]:
                 modded_data = aug(data_x)
                 modded_mfccs = librosa.feature.mfcc(y=modded_data, sr=sampling_rate, n_mfcc=40)
                 append_data(x, y, modded_mfccs, disease_dict[current_disease])
 
-    # dbg
-    test = [(item[0].shape, item[1]) for item in zip(x, y)]
-    for item in test[:10]:
-        print(item)
-
-    print(disease_dict)
-
     x = np.array(x)
     y = np.array(y)
 
-    return x, y
+    return x, y, disease_dict
