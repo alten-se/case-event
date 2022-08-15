@@ -25,12 +25,11 @@ def train(x: ndarray, y:ndarray, model: Sequential) -> Sequential:
     )
 
     # TODO k-fold cross validation, train diffrent instaseces using diffrent selections for train/validate set
-    # split_index = (batch_size * 1) // 3  # use a 1/3 of data for validation
 
     train_set, validate_set = split_data(x, y)
 
-    # train_set = x[split_index:], y[split_index:]
-    # validate_set = x[:split_index], y[:split_index]
+    for patient_class in np.unique(validate_set[1]):
+        print("cv:", sum(validate_set[1]==patient_class), "ct:", sum(train_set[1]==patient_class), "frac:", sum(validate_set[1]==patient_class)/(sum(validate_set[1]==patient_class) + sum(train_set[1]==patient_class)))
 
     model.fit(train_set[0], train_set[1], epochs=500, validation_data=validate_set)
 

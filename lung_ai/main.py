@@ -32,13 +32,16 @@ else:
         label_dict = pickle.load(file)
 
 
-print("x shape:", x.shape, x.size)
 
+
+model = rnn_model(input_shape=x.shape[1:], n_classes=len(label_dict))
+
+print("x shape:", x.shape, x.size)
 print("## lables info")
 for k, v in label_dict.items():
     print("- condition:", k, ", class_id:", v, ", count:", (y==v).sum())
 
-model = rnn_model(input_shape=x.shape[1:], n_classes=len(label_dict))
+
 trained_model = train(x, y, model)
 
 print("Done!")
