@@ -1,3 +1,6 @@
+from importlib.resources import path
+from re import L
+from sqlite3 import DatabaseError
 import numpy as np
 import librosa
 from augmentation import add_noise, shift, stretch
@@ -30,9 +33,10 @@ def extract_data(dir_, path_patient_disease_list):
     disease_counter = 0
 
     def get_disease(file: str) -> str:
+        patient_id = file[:3]
 
         current_row = patient_disease_list.loc[patient_disease_list['patient_id'] == int(
-            id)]
+            patient_id)]
         return current_row['disease'].values[0]
 
     rare_diseases = ("LRTI", "ASTHMA")
@@ -78,8 +82,8 @@ def extract_data(dir_, path_patient_disease_list):
                 modded_data = aug(data_x)
                 modded_mfccs = librosa.feature.mfcc(
                     y=modded_data, sr=sampling_rate, n_mfcc=40)
-                x.append[modded_mfccs.T]
-                y.append[disease_dict[current_disease]]
+                x.append(modded_mfccs.T)
+                y.append(disease_dict[current_disease])
 
     x = np.array(x)
     y = np.array(y)
@@ -97,16 +101,30 @@ def get_data(extract=False):
         my_folder, data_folder, "data" + os.path.sep
     )
 
-    x_path = os.path.join(my_folder, "Data", "out", "x")
-    y_path = os.path.join(my_folder, "Data", "out", "y")
-    label_path = os.path.join(my_folder, "Data", "out", "label.dict")
-    if extract:
+    cashe_folder = "extract_cashe"
+
+    x_path = os.path.join(my_folder, "Data", cashe_folder, "x")
+    y_path = os.path.join(my_folder, "Data", cashe_folder, "y")
+    label_path = os.path.join(my_folder, "Data", cashe_folder, "label.dict")
+    src_path = os.path.join(my_folder, "Data", cashe_folder, os.path.basename(__file__))
+
+    src_diff = "file is not chashed"
+    if os.path.exists(src_path):
+        src_diff = os.popen(" ".join(("diff", __file__, src_path))).read()
+
+
+    if src_diff:  # if git diff is not the empty string
         x, y, label_dict = extract_data(
             wav_path, labels_path)  # TODO save/load np.arrays
         np.save(x_path, arr=x)
         np.save(y_path, arr=y)
         with open(label_path, "wb+") as file:
             pickle.dump(label_dict, file)
+
+        with open(src_path, "w+") as cashe_file:
+            with open(__file__, "r") as src:
+                cashe_file.write(src.read())
+
     else:
         x = np.load(x_path + ".npy", allow_pickle=True)
         y = np.load(y_path + ".npy")
