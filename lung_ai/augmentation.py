@@ -1,6 +1,7 @@
 import numpy as np
 import librosa
 
+
 def add_noise(data, x):
     noise = np.random.randn(len(data))
     data_noise = data + x * noise

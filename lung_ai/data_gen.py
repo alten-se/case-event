@@ -11,7 +11,7 @@ class DataGenerator(Sequence):
     __get_item__ Pads a batch of data to the same len before returning it
     """
 
-    def __init__(self, data_set, batch_size=32, shuffle=False):
+    def __init__(self, data_set: DataSet, batch_size=32, shuffle=False):
         """Initialization
         :param list_IDs: list of all 'label' ids to use in the generator
         :param to_fit: True to return X and y, False to return X only
@@ -37,7 +37,8 @@ class DataGenerator(Sequence):
         """
 
         # Generate indexes of the batch
-        inds = np.arange(index * self.batch_size, (index + 1) * self.batch_size)
+        inds = np.arange(index * self.batch_size,
+                         (index + 1) * self.batch_size)
 
         # Generate data
         x = self.data[inds]
@@ -45,7 +46,7 @@ class DataGenerator(Sequence):
         x = pad_sequences(x, value=0, dtype="float32")
         y = self.labels[inds]
 
-        return x, y 
+        return x, y
 
     def on_epoch_end(self):
         """
@@ -56,4 +57,3 @@ class DataGenerator(Sequence):
             np.random.shuffle(inds)
             self.data = self.data[inds]
             self.labels = self.labels[inds]
-

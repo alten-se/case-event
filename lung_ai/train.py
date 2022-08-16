@@ -1,13 +1,7 @@
-from typing import Tuple
-from numpy import ndarray
-
-import numpy as np
 import tensorflow as tf
 from keras.models import Sequential
 
 from data_gen import DataGenerator
-
-
 
 
 def train(train_gen: DataGenerator, validate_gen: DataGenerator, model: Sequential) -> Sequential:
@@ -21,7 +15,8 @@ def train(train_gen: DataGenerator, validate_gen: DataGenerator, model: Sequenti
     '''
     def get_lr_metric(optimizer):
         def lr(y_true, y_pred):
-            return optimizer._decayed_lr(tf.float32) # I use ._decayed_lr method instead of .lr
+            # I use ._decayed_lr method instead of .lr
+            return optimizer._decayed_lr(tf.float32)
         return lr
 
     opt = tf.keras.optimizers.Adam(learning_rate=1e-3, decay=1e-3)
@@ -35,4 +30,3 @@ def train(train_gen: DataGenerator, validate_gen: DataGenerator, model: Sequenti
 
     model.fit(train_gen, validation_data=validate_gen, epochs=200)
     return model
-

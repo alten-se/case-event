@@ -4,7 +4,8 @@ link = https://www.youtube.com/watch?v=BSpXCRTOLJA
 """
 import tensorflow as tf
 from keras.models import Sequential
-from keras.layers import Dense, Dropout # "CudNNLSTM" is GPU optimized variant of "LTSM"
+# "CudNNLSTM" is GPU optimized variant of "LTSM"
+from keras.layers import Dense, Dropout
 
 print(tf.config.list_physical_devices())
 
