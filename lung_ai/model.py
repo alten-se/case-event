@@ -16,7 +16,7 @@ else:
     from keras.layers import LSTM
 
 
-def rnn_model(input_shape: Tuple[int, int], n_classes: int) -> Sequential:
+def rnn_model(input_shape: Tuple, n_classes: int) -> Sequential:
     """_summary_
 
     Args:
