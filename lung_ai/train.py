@@ -5,7 +5,7 @@ import numpy as np
 import tensorflow as tf
 from keras.models import Sequential
 
-from data_fmt import DataGenerator
+from data_gen import DataGenerator
 
 DataSet = Tuple[ndarray, ndarray]
 
