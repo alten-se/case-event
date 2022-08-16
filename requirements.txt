@@ -1,0 +1,8 @@
+numpy
+tensorflow
+librosa
+keras
+pandas
+
+
+
