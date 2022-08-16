@@ -34,7 +34,7 @@ print("validate_len: ", len(validate_set[1]))
 train_gen = DataGenerator(train_set, batch_size=32, shuffle=True)
 validate_gen = DataGenerator(validate_set, batch_size=32, shuffle=True)
 
-trained_model = train(train_gen, validate_gen, labels, model)
+trained_model = train(train_gen, validate_gen, model)
 trained_model.save_weights("lung_ai/trained_models/w_temp")
 
 print("Done!")

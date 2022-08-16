@@ -1,22 +1,25 @@
 import numpy as np
 from keras.utils import Sequence
 from keras.utils import pad_sequences
+from data_split import DataSet
 
 
 class DataGenerator(Sequence):
     """Generates data for Keras
     Sequence based data generator. Suitable for building data generator for training and prediction.
+    Enable data sets of varing time length.
+    __get_item__ Pads a batch of data to the same len before returning it
     """
 
-    def __init__(self, data, labels, batch_size=32, shuffle=False):
+    def __init__(self, data_set, batch_size=32, shuffle=False):
         """Initialization
         :param list_IDs: list of all 'label' ids to use in the generator
         :param to_fit: True to return X and y, False to return X only
         :param batch_size: batch size at each iteration
         :param shuffle: True to shuffle label indexes after every epoch
         """
-        self.data = data
-        self.labels = labels
+        self.data = data_set[0]
+        self.labels = data_set[1]
         self.batch_size = batch_size
         self.shuffle = shuffle
         self.on_epoch_end()
