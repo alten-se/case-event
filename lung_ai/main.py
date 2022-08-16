@@ -1,52 +1,40 @@
+from cProfile import label
 import os
 import pickle
+from wsgiref import validate
 import numpy as np
 
-from data_extraction import load_data
+from data_extraction import get_data
 from model import rnn_model
 from train import train
-
-
-my_folder = os.path.dirname(__file__)
-data_folder = "Data" 
-labels_path = os.path.join(
-    my_folder, data_folder, "IBCHI_Challenge_diagnosis_v02.csv"
-)
-wav_path = os.path.join(
-    my_folder, data_folder, "data"+os.path.sep
-)
+from data_split import split_data
+from data_gen import  DataGenerator
 
 extract_data = False
-x_path = os.path.join(my_folder, "Data", "out", "x")
-y_path = os.path.join(my_folder, "Data", "out", "y")
-label_path = os.path.join(my_folder, "Data", "out", "label.dict")
-if extract_data: 
-    x, y, label_dict = load_data(wav_path, labels_path) #TODO save/load np.arrays
-    np.save(x_path, arr=x)
-    np.save(y_path, arr=y)
-    with open(label_path, "wb+") as file:
-        pickle.dump(label_dict, file)
-else:
-    x = np.load(x_path + ".npy", allow_pickle=True)
-    y = np.load(y_path + ".npy")
-    with open(label_path, "rb") as file:
-        label_dict = pickle.load(file)
+data, labels, label_dict = get_data(extract_data)
 
-
-
-
-data_shape = x.shape  
+data_shape = data.shape  
 input_shape = (None, data_shape[-1]) # None means unknown, in this case that we let n_time_steps variate
 model = rnn_model(input_shape=input_shape, n_classes=len(label_dict))
 
 print("x shape:", data_shape)
-print("len(data)", len(x))
+print("len(data)", len(data))
 print("## lables info")
 for k, v in label_dict.items():
-    print("- condition:", k, ", class_id:", v, ", count:", (y==v).sum())
+    print("- condition:", k, ", class_id:", v, ", count:", (labels==v).sum())
 
 
-trained_model = train(x, y, model)
+train_set, validate_set = split_data(data, labels, fraction=0.3)
+
+for patient_class in np.unique(validate_set[1]):
+    print("cv:", sum(validate_set[1]==patient_class), "ct:", sum(train_set[1]==patient_class), "frac:", sum(validate_set[1]==patient_class)/(sum(validate_set[1]==patient_class) + sum(train_set[1]==patient_class)))
+print("train_len: ", len(train_set[1]))
+print("validate_len: ", len(validate_set[1]))
+
+train_gen = DataGenerator(train_set, batch_size=32, shuffle=True)
+validate_gen = DataGenerator(validate_set, batch_size=32, shuffle=True)
+
+trained_model = train(train_gen, validate_gen, labels, model)
 trained_model.save_weights("lung_ai/trained_models/w_temp")
 
 print("Done!")

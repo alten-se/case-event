@@ -2,11 +2,11 @@ import numpy as np
 import librosa
 from augmentation import add_noise, shift, stretch
 import os
+import pickle
 import pandas as pd
 import functools
 
-
-def load_data(dir_, path_patient_disease_list):
+def extract_data(dir_, path_patient_disease_list):
     """Extract feature from the Sound data. We extracted Mel-frequency cepstral coefficients( spectral
         features ), from the audio data. Augmentation of sound data by adding Noise, streaching and shifting
         is also implemented here. 40 features are extracted from each audio data and used to train the model.
@@ -77,3 +77,30 @@ def load_data(dir_, path_patient_disease_list):
     y = np.array(y)
 
     return x, y, disease_dict
+
+def get_data(extract=False):
+    my_folder = os.path.dirname(__file__)
+    data_folder = "Data" 
+    labels_path = os.path.join(
+        my_folder, data_folder, "IBCHI_Challenge_diagnosis_v02.csv"
+    )
+    wav_path = os.path.join(
+        my_folder, data_folder, "data"+os.path.sep
+    )
+
+    x_path = os.path.join(my_folder, "Data", "out", "x")
+    y_path = os.path.join(my_folder, "Data", "out", "y")
+    label_path = os.path.join(my_folder, "Data", "out", "label.dict")
+    if extract: 
+        x, y, label_dict = extract_data(wav_path, labels_path) #TODO save/load np.arrays
+        np.save(x_path, arr=x)
+        np.save(y_path, arr=y)
+        with open(label_path, "wb+") as file:
+            pickle.dump(label_dict, file)
+    else:
+        x = np.load(x_path + ".npy", allow_pickle=True)
+        y = np.load(y_path + ".npy")
+        with open(label_path, "rb") as file:
+            label_dict = pickle.load(file)
+    
+    return x, y, label_dict
