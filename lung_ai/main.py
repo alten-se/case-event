@@ -6,6 +6,7 @@ from data_extraction import load_data
 from model import rnn_model
 from train import train
 
+
 my_folder = os.path.dirname(__file__)
 data_folder = "Data" 
 labels_path = os.path.join(
@@ -26,19 +27,26 @@ if extract_data:
     with open(label_path, "wb+") as file:
         pickle.dump(label_dict, file)
 else:
-    x = np.load(x_path + ".npy")
+    x = np.load(x_path + ".npy", allow_pickle=True)
     y = np.load(y_path + ".npy")
     with open(label_path, "rb") as file:
         label_dict = pickle.load(file)
 
 
-print("x shape:", x.shape, x.size)
 
+
+data_shape = x.shape  
+input_shape = (None, data_shape[-1]) # None means unknown, in this case that we let n_time_steps variate
+model = rnn_model(input_shape=input_shape, n_classes=len(label_dict))
+
+print("x shape:", data_shape)
+print("len(data)", len(x))
 print("## lables info")
 for k, v in label_dict.items():
     print("- condition:", k, ", class_id:", v, ", count:", (y==v).sum())
 
-model = rnn_model(input_shape=x.shape[1:], n_classes=len(label_dict))
+
 trained_model = train(x, y, model)
+trained_model.save_weights("lung_ai/trained_models/w_temp")
 
 print("Done!")
