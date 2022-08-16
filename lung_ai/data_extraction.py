@@ -32,20 +32,16 @@ def load_data(dir_, path_patient_disease_list):
         current_row = patient_disease_list.loc[patient_disease_list['patient_id'] == int(id)]
         return current_row['disease'].values[0]
             
-    files = [f for f in os.listdir(dir_) if f[-3:] =="wav"]
-    print("Extracting data from n files:",len(files))
+    sound_files = [f for f in os.listdir(dir_) if f[-3:] =="wav"]
+    print("Extracting data from n files:",len(sound_files))
     
     def append_data(data, labels, mfccs, label):
-        min_size = 700
-        if mfccs.shape[1] < min_size:
-            print("Warning discared a sound_entry due to tts small size:", mfccs.shape[1])
-            return
-        data.append(mfccs[:, :min_size].T)
+        data.append(mfccs.T)
         labels.append(label)
 
-    for sound_file in files:
-        patient_id = sound_file[:3] 
-        sound_path = os.path.join(dir_, sound_file)
+    for file in sound_files:
+        patient_id = file[:3] 
+        sound_path = os.path.join(dir_, file)
         current_disease = get_disease(patient_id)
 
         if current_disease.upper() in ("LRTI", "ASTHMA"):  # TODO Bronchictasis 
