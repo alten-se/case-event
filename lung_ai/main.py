@@ -9,7 +9,7 @@ from data_gen import DataGenerator
 extract_data = False
 data, labels, label_dict = get_data(extract_data)
 
-data_shape = data.shape
+data_shape = data[0].shape
 # None means unknown, in this case that we let n_time_steps variate
 input_shape = (None, data_shape[-1])
 model = rnn_model(input_shape=input_shape, n_classes=len(label_dict))
