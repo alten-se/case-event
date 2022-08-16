@@ -1,6 +1,7 @@
 import tensorflow as tf
-from keras.models import Sequential
 
+from keras.models import Sequential
+from keras.optimizers import Adam 
 from data_gen import DataGenerator
 
 
@@ -19,7 +20,7 @@ def train(train_gen: DataGenerator, validate_gen: DataGenerator, model: Sequenti
             return optimizer._decayed_lr(tf.float32)
         return lr
 
-    opt = tf.keras.optimizers.Adam(learning_rate=1e-3, decay=1e-3)
+    opt = Adam(learning_rate=1e-3, decay=1e-3)
     lr_metric = get_lr_metric(opt)
 
     model.compile(
