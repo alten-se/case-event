@@ -37,7 +37,7 @@ def load_data(dir_, path_patient_disease_list):
             
     sound_files = [f for f in os.listdir(dir_) if f[-3:] =="wav"]
 
-    files = [f for f in sound_files if get_disease(f) not in rare_diseases]
+    files = [f for f in sound_files if get_disease(f) not in rare_diseases][:100]
 
     print("Extracting data from n files:",len(files))
     
