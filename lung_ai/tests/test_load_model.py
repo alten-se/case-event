@@ -1,4 +1,3 @@
-from statistics import mode
 from lungai.model import rnn_model
 from lungai.data_extraction import get_data
 
@@ -6,7 +5,6 @@ import os
 from keras.utils import pad_sequences
 import numpy as np
 
-from keras.optimizers import Adam
 
 TESTS_PATH = os.path.dirname(__file__)
 PACKAGE_ROOT = os.path.dirname(TESTS_PATH) 
@@ -17,8 +15,6 @@ def test_load():
     data_shape = (None, data[0].shape[-1])
     model = rnn_model(data_shape, len(label_dict))
     model.load_weights(os.path.join(TRAINED_AI_PATH, "dummy/w"))
-    model.compile()
-    model.optimizer
 
     test_inds = [0, 1]
 
