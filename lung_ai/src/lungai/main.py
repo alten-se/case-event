@@ -1,13 +1,12 @@
 import numpy as np
 
-from data_extraction import get_data
-from model import rnn_model
-from train import train
-from data_split import split_data
-from data_gen import DataGenerator
+from lungai.data_extraction import get_data
+from lungai.model import rnn_model
+from lungai.train import train
+from lungai.data_split import split_data
+from lungai.data_gen import DataGenerator
 
-extract_data = False
-data, labels, label_dict = get_data(extract_data)
+data, labels, label_dict = get_data()
 
 data_shape = data[0].shape
 # None means unknown, in this case that we let n_time_steps variate
@@ -33,6 +32,6 @@ train_gen = DataGenerator(train_set, batch_size=32, shuffle=True)
 validate_gen = DataGenerator(validate_set, batch_size=32, shuffle=True)
 
 trained_model = train(train_gen, validate_gen, model)
-trained_model.save_weights("lung_ai/trained_models/w_temp/w_temp")
+trained_model.save_weights("lung_ai/trained_models/latest/w")
 
 print("Done!")
