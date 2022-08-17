@@ -1,7 +1,8 @@
 import numpy as np
 from keras.utils import Sequence
 from keras.utils import pad_sequences
-from data_split import DataSet
+
+from lungai.data_split import DataSet
 
 
 class DataGenerator(Sequence):
