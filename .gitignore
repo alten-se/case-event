@@ -2,7 +2,7 @@
 data/
 *.zip
 trained_models/
-lung_ai/Data/extract_cashe/*
+lung_ai/db/extract_cashe/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
