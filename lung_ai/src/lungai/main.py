@@ -6,8 +6,7 @@ from lungai.train import train
 from lungai.data_split import split_data
 from lungai.data_gen import DataGenerator
 
-extract_data = False
-data, labels, label_dict = get_data(extract_data)
+data, labels, label_dict = get_data()
 
 data_shape = data[0].shape
 # None means unknown, in this case that we let n_time_steps variate
