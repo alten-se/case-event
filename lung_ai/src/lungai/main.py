@@ -32,6 +32,6 @@ train_gen = DataGenerator(train_set, batch_size=32, shuffle=True)
 validate_gen = DataGenerator(validate_set, batch_size=32, shuffle=True)
 
 trained_model = train(train_gen, validate_gen, model)
-trained_model.save_weights("lung_ai/trained_models/w_temp/w_temp")
+trained_model.save_weights("lung_ai/trained_models/latest/w")
 
 print("Done!")
