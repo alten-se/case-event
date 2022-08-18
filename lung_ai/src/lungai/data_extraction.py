@@ -1,7 +1,7 @@
 from argparse import Namespace
-from termios import N_MOUSE
 import numpy as np
 import librosa
+from soundfile import SoundFile
 import os
 import pickle
 import pandas as pd
@@ -11,7 +11,7 @@ from typing import Dict, Tuple
 from numpy import ndarray
  
 from lungai.augmentation import add_noise, shift, stretch
-from lungai.paths import DB_PATH, DATA_CASHE_PATH
+from lungai.paths import DATA_PATH, TABLE_PATH, DATA_CASHE_PATH
 
 paths = Namespace(
     x = os.path.join(DATA_CASHE_PATH, "x"),
@@ -19,6 +19,18 @@ paths = Namespace(
     dict = os.path.join(DATA_CASHE_PATH, "label.dict"),
     src_cashe = os.path.join(DATA_CASHE_PATH, os.path.basename(__file__))
 )
+
+def extract_mfccs(file: str | SoundFile) -> ndarray:
+    """generates mfcc's from sound file
+
+    Args:
+        file (str | SoundFile): path to file or soundfile object
+
+    Returns:
+        ndarray: Mel-frequency cepstral coefficients
+    """
+    data, sample_rate = librosa.load(file, res_type="kaiser_fast")
+    return librosa.feature.mfcc(y=data, sr=sample_rate, n_mfcc=40)
 
 def extract_data(data_path: str, labels_path:str) -> Tuple[ndarray, ndarray, Dict]:
     """Extract feature from the Sound data. We extracted Mel-frequency cepstral coefficients( spectral
@@ -69,17 +81,13 @@ def extract_data(data_path: str, labels_path:str) -> Tuple[ndarray, ndarray, Dic
         patient_id = file[:3]
         if (current_disease == 'COPD'):
             if sum([patient_id == p for p in copd_patients]) < 2:
-                data_x, sampling_rate = librosa.load(
-                    sound_path, res_type='kaiser_fast')
-                mfccs = librosa.feature.mfcc(
-                    y=data_x, sr=sampling_rate, n_mfcc=40)
+                mfccs = extract_mfccs(sound_path)
                 copd_patients.append(patient_id)
                 x.append(mfccs.T)
                 y.append(disease_dict[current_disease])
         else:
             data_x, sampling_rate = librosa.load(
                 sound_path, res_type='kaiser_fast')
-            mfccs = librosa.feature.mfcc(y=data_x, sr=sampling_rate, n_mfcc=40)
 
             def no_mod(x):
                 return x
@@ -108,9 +116,7 @@ def get_data():
     
     print("Cashe is invalid, redoing data extration...")
 
-    data_path = os.path.join(DB_PATH, "data")
-    labels_path = os.path.join(DB_PATH, "IBCHI_Challenge_diagnosis_v02.csv")
-    x, y, label_dict = extract_data(data_path, labels_path)  # TODO save/load np.arrays
+    x, y, label_dict = extract_data(DATA_PATH, TABLE_PATH)  # TODO save/load np.arrays
     
     _save_cashe(x, y, label_dict)
     return x, y, label_dict
