@@ -1,9 +1,43 @@
+from typing import Tuple
 from sklearn.metrics import (
     accuracy_score, precision_score, recall_score, classification_report,
     f1_score, matthews_corrcoef, cohen_kappa_score
 )
 import numpy as np
+from numpy import ndarray
+from keras.models import Sequential
 
+def invert_dict(k_v: dict) -> dict:
+    """Creates a new dict that is the inverted input dict.
+
+    Args:
+        k_v (dict): a dict{ keys, values}
+
+    Returns:
+        dict: v_k
+    """
+    return {v: k for k, v in k_v.items()}
+ 
+def eval(input: ndarray, model: Sequential, label_dict: dict) -> Tuple[str, float]:
+    """_summary_
+
+    Args:
+        input (ndarray): single data point
+        model (Sequential): model to use for prediction
+        label_dict (dict): mapping from str to int labels
+
+    Returns: 
+        Tuple(
+            str: predicted str label,
+            float: confidence level between 0 to 1.0
+        )
+    """
+    inv_map = invert_dict(label_dict)
+
+    pred = model(input[np.newaxis, :])
+    index = np.argmax(pred)
+
+    return inv_map[index], pred[0, index]
 
 def evalModel(y_test, y_pred):
     '''
