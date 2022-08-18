@@ -1,4 +1,3 @@
-import imp
 from typing import Tuple
 from sklearn.metrics import (
     accuracy_score, precision_score, recall_score, classification_report,
