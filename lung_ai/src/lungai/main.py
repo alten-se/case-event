@@ -1,17 +1,21 @@
 import numpy as np
+import pickle
+from os.path import join as p_join
 
 from lungai.data_extraction import get_data
 from lungai.model import rnn_model
 from lungai.train import train
 from lungai.data_split import split_data
 from lungai.data_gen import DataGenerator
+from lungai.paths import TRAINED_MODELS_PATH
 
 data, labels, label_dict = get_data()
 
 data_shape = data[0].shape
 # None means unknown, in this case that we let n_time_steps variate
 input_shape = (None, data_shape[-1])
-model = rnn_model(input_shape=input_shape, n_classes=len(label_dict))
+n_classes = len(label_dict)
+model = rnn_model(input_shape, n_classes)
 
 print("x shape:", data_shape)
 print("len(data)", len(data))
@@ -32,6 +36,12 @@ train_gen = DataGenerator(train_set, batch_size=32, shuffle=True)
 validate_gen = DataGenerator(validate_set, batch_size=32, shuffle=True)
 
 trained_model = train(train_gen, validate_gen, model)
-trained_model.save_weights("lung_ai/trained_models/latest/w")
+
+output_path = p_join(TRAINED_MODELS_PATH, "latest")
+with open(p_join(output_path, "data_shape.tuple"), mode="wb+") as file:
+    pickle.dump((input_shape, n_classes), file) 
+
+trained_model.save_weights(p_join(output_path, "w"))
+   
 
 print("Done!")

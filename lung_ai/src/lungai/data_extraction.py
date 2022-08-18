@@ -1,3 +1,4 @@
+from argparse import Namespace
 from termios import N_MOUSE
 import numpy as np
 import librosa
@@ -10,7 +11,14 @@ from typing import Dict, Tuple
 from numpy import ndarray
  
 from lungai.augmentation import add_noise, shift, stretch
+from lungai.paths import DB_PATH, DATA_CASHE_PATH
 
+paths = Namespace(
+    x = os.path.join(DATA_CASHE_PATH, "x"),
+    y = os.path.join(DATA_CASHE_PATH, "y"),
+    dict = os.path.join(DATA_CASHE_PATH, "label.dict"),
+    src_cashe = os.path.join(DATA_CASHE_PATH, os.path.basename(__file__))
+)
 
 def extract_data(data_path: str, labels_path:str) -> Tuple[ndarray, ndarray, Dict]:
     """Extract feature from the Sound data. We extracted Mel-frequency cepstral coefficients( spectral
@@ -92,36 +100,6 @@ def extract_data(data_path: str, labels_path:str) -> Tuple[ndarray, ndarray, Dic
 
     return x, y, disease_dict
 
-def path_parrent(path: str, n=1) -> str:
-    """ returns the nth parrent dir of path
-    Examples:
-       >>> path_parrent(a_path, 1) == os.path.dirname(a_path)
-    True
-
-       >>> path_parrent("path/to/file.txt", 2) == "path"
-    True
-
-       >>> path_parrent("path/to/file.txt", 0) == "path/to/file"
-    True
-
-    Args:
-        path (str): path/to/a/file.txt or path/to/a/folder/
-
-        n (int, optional): the amount 'parrent-levels' up to return. Defaults to 1.
-
-    Returns:
-        str: path of nth parrent
-    """
-
-    if n<1:
-        return path
-    n -= 1
-    return path_parrent(os.path.dirname(path), n) 
-    
-
-PACKAGE_ROOT_PATH = path_parrent(__file__, 3)
-DB_PATH = os.path.join(PACKAGE_ROOT_PATH, "db")
-
 def get_data():
     if not cashe_diff():
         print("Cashe is valid, using chached data_extraction")
@@ -138,42 +116,29 @@ def get_data():
     return x, y, label_dict
 
 def cashe_diff() -> bool:
-    src_cash_path = _get_cashe_paths()[3]
 
-    if os.path.exists(src_cash_path):
-        cash_diff = os.popen(" ".join(("diff", __file__, src_cash_path))).read()
+    if os.path.exists(paths.src_cashe):
+        cash_diff = os.popen(" ".join(("diff", __file__, paths.src_cashe))).read()
     else:
         cash_diff = "{__file__} is not chashed"
 
     return bool(cash_diff)
 
-def _get_cashe_paths() -> Tuple[str, str, str]:
-    cashe_path = os.path.join(DB_PATH, "extract_cashe")
-    my_name = os.path.basename(__file__)
-    
-    x_path = os.path.join(cashe_path, "x")
-    y_path = os.path.join(cashe_path, "y")
-    dict_path = os.path.join(cashe_path, "label.dict")
-    src_cash_path = os.path.join(cashe_path, my_name)
 
-    return x_path, y_path, dict_path, src_cash_path
 
 def _load_cashe() -> Tuple[ndarray, ndarray, Dict]:
-    x_path, y_path, dict_path = _get_cashe_paths()[:3]
-    x = np.load(x_path + ".npy", allow_pickle=True)
-    y = np.load(y_path + ".npy")
-    with open(dict_path, "rb") as file:
+    x = np.load(paths.x + ".npy", allow_pickle=True)
+    y = np.load(paths.y + ".npy")
+    with open(paths.dict, "rb") as file:
         label_dict = pickle.load(file)
     return x, y, label_dict
 
 def _save_cashe(x: ndarray, y: ndarray, label_dict: Dict):
-    x_path, y_path, dict_path, src_cash_path = _get_cashe_paths()
-    
-    np.save(x_path, arr=x)
-    np.save(y_path, arr=y)
-    with open(dict_path, "wb+") as file:
+    np.save(paths.x, arr=x)
+    np.save(paths.y, arr=y)
+    with open(paths.dict, "wb+") as file:
         pickle.dump(label_dict, file)
 
-    with open(src_cash_path, "w+") as cashe_file:
+    with open(paths.src_cashe, "w+") as cashe_file:
         with open(__file__, "r") as src:
             cashe_file.write(src.read())
