@@ -6,11 +6,10 @@ from keras.layers import Dense, Dropout
 import tensorflow as tf
 
 
-print(tf.config.list_physical_devices())
 
 if len(tf.config.list_physical_devices("GPU")) > 0:
     print("CUDA enbabled GPU detected!")
-    from keras.layers import CuDNNLSTM as LSTM
+    from keras.layers import CuDNNLSTM as LSTM  
 else:
     print("no cuda enbaled gpu, falling back to CPU")
     from keras.layers import LSTM
