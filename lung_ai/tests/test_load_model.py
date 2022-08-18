@@ -1,8 +1,9 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 import numpy as np
 from os.path import join as p_join
 
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
 tf.get_logger().setLevel('ERROR')
 
@@ -12,10 +13,12 @@ from lungai.paths import TRAINED_MODELS_PATH, DATA_PATH
 from lungai.evaluate import eval, eval_sound
 from lungai.clear import clear
 
+from lungai.model import AI
 
 
 def get_model():
-    return load_trained_model(p_join(TRAINED_MODELS_PATH, "dummy"))
+    ai = AI.load(p_join(TRAINED_MODELS_PATH, "dummy"))
+    return ai.model
 
 def pretty_print(label: str, confidence: float):
     print("Prediction: {label}, prob. = {confidence:.3%}".format(
