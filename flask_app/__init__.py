@@ -5,18 +5,22 @@ from flask.helpers import redirect, url_for
 from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
+from lungai.force_cpu import force_CPU
+
+force_CPU()
+
 from lungai.load_model import load_trained_model
 from lungai.paths import TRAINED_MODELS_PATH
 from lungai.evaluate import eval_sound
 from lungai.data_extraction import get_data
 
 
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"   # see issue #152
-os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
 
+from lungai.model import AI
 
-model = load_trained_model(os.path.join(TRAINED_MODELS_PATH, "dummy"))
+
+model = AI.load(os.path.join(TRAINED_MODELS_PATH, "dummy")).model
 _, _, label_dict = get_data()
 
 
