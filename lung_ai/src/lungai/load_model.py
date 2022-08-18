@@ -6,7 +6,7 @@ from statistics import mode
 
 from lungai.model import rnn_model
 
-def load_trained_model(path):
+def load_trained_model(path: str):
     shape_path = p_join(path, "data_shape.tuple")
     with open(shape_path, "rb") as file:
         input_shape, n_classes = pickle.load(file)

@@ -6,6 +6,15 @@ from sklearn.metrics import (
 import numpy as np
 from numpy import ndarray
 from keras.models import Sequential
+from soundfile import SoundFile
+
+from lungai.data_extraction import extract_mfccs
+
+def eval_sound(file, model, label_dict):
+    s_file = SoundFile(file, "r")
+    mffcs = extract_mfccs(s_file)
+    return eval(mffcs.T, model, label_dict)
+    
 
 def invert_dict(k_v: dict) -> dict:
     """Creates a new dict that is the inverted input dict.
@@ -34,7 +43,7 @@ def eval(input: ndarray, model: Sequential, label_dict: dict) -> Tuple[str, floa
     """
     inv_map = invert_dict(label_dict)
 
-    pred = model(input[np.newaxis, :])
+    pred = np.array(model(input[np.newaxis, :]))
     index = np.argmax(pred)
 
     return inv_map[index], pred[0, index]
