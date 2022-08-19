@@ -1,5 +1,4 @@
 import numpy as np
-import pickle
 from os.path import join as p_join
 
 from lungai.data_extraction import get_data

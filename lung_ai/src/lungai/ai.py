@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from typing import Tuple, List, Any
-from warnings import catch_warnings
+from typing import Optional, Tuple, Dict
 from numpy import ndarray
 
 import os, pickle
@@ -23,7 +22,7 @@ class AI:
     def __init__(self, input_shape, n_classes) -> None:
         self.model = rnn_model(input_shape, n_classes)
         self.io_shape = (input_shape, n_classes)
-        self.label_dict = None
+        self.label_dict: Optional[Dict] = None
 
     @staticmethod
     def get_paths(path: str):
@@ -65,7 +64,7 @@ class AI:
 
         return ai
 
-    def predict_one(self, input: ndarray) -> Tuple[str, float]:
+    def predict_one(self, input: ndarray) -> Tuple[int | str, float]:
         """_summary_
 
         Args:
@@ -79,7 +78,7 @@ class AI:
         """
 
         pred = np.array(self.model(input[np.newaxis, :]))
-        index = np.argmax(pred)
+        index = np.argmax(pred).item(0)
 
         confidence = pred[0, index]
 

@@ -7,7 +7,7 @@ import pickle
 import pandas as pd
 import functools
 
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List, Callable
 from numpy import ndarray
  
 from lungai.augmentation import add_noise, shift, stretch
@@ -47,11 +47,11 @@ def extract_data(data_path: str, labels_path:str) -> Tuple[ndarray, ndarray, Dic
     """
     x = []
     y = []
-    copd_patients = []
+    copd_patients: List[str] = []
 
     patient_disease_list = pd.read_csv(labels_path, sep=";")
 
-    disease_dict = {}
+    disease_dict: Dict[str, int] = {}
     disease_counter = 0
 
     def get_disease(file: str) -> str:
@@ -66,7 +66,7 @@ def extract_data(data_path: str, labels_path:str) -> Tuple[ndarray, ndarray, Dic
     sound_files = [f for f in os.listdir(data_path) if f[-3:] == "wav"]
 
     files = [f for f in sound_files if get_disease(
-        f) not in rare_diseases][:100]
+        f) not in rare_diseases]
 
     print("Extracting data from n files:", len(files))
 
@@ -96,19 +96,21 @@ def extract_data(data_path: str, labels_path:str) -> Tuple[ndarray, ndarray, Dic
             stretch_mod1 = functools.partial(stretch, rate=1.2)
             stretch_mod2 = functools.partial(stretch, rate=0.9)
 
-            for aug in [no_mod, noise_mod, shift_mod, stretch_mod1, stretch_mod2]:
+            augmentations: Tuple[Callable, ...] = (no_mod, noise_mod, shift_mod, stretch_mod1, stretch_mod2)
+
+            for aug in augmentations:
                 modded_data = aug(data_x)
                 modded_mfccs = librosa.feature.mfcc(
                     y=modded_data, sr=sampling_rate, n_mfcc=40)
                 x.append(modded_mfccs.T)
                 y.append(disease_dict[current_disease])
 
-    x = np.array(x)
-    y = np.array(y)
+    data = np.array(x)
+    labels = np.array(y)
 
-    return x, y, disease_dict
+    return data, labels, disease_dict
 
-def get_data():
+def get_data() -> Tuple[ndarray, ndarray, Dict]:
     if not cashe_diff():
         print("Cashe is valid, using chached data_extraction")
         x, y, label_dict = _load_cashe()
