@@ -1,37 +1,39 @@
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 import numpy as np
-from os.path import join as p_join
+from os.path import join
 
-import tensorflow as tf
-tf.get_logger().setLevel('ERROR')
+from lungai.tf_config import silence_tf
+tf = silence_tf()
 
-from lungai.load_model import load_trained_model
 from lungai.data_extraction import get_data
 from lungai.paths import TRAINED_MODELS_PATH, DATA_PATH
-from lungai.evaluate import predict_one, predict_sound
-from lungai.clear import clear
+from lungai.ai import AI
 
-from lungai.model import AI
-
-
-def get_model():
-    ai = AI.load(p_join(TRAINED_MODELS_PATH, "dummy"))
-    return ai.model
+dummy_path = join(TRAINED_MODELS_PATH, "dummy")
 
 def pretty_print(label: str, confidence: float):
     print("Prediction: {label}, prob. = {confidence:.3%}".format(
             label=label, 
             confidence=confidence))
 
-def test_load():
-    data, labels, label_dict = get_data()
-    model = get_model()
+
+def test_load(silent=False):
+    ai = AI.load(dummy_path)
+    if not silent:
+        ai.model.summary()
+        print(ai.label_dict)
+        print(ai.io_shape)
+
+    return ai
+
+def test_predict():
+    ai = test_load(silent=True)
+
+    data = get_data()[0]
 
     test_inds = [0, 1]
 
-    predictions = [ predict_one(data_point, model, label_dict) for data_point in data[test_inds]]
+    predictions = [ ai.predict_one(item) for item in data[test_inds]]
     
     for label, confidence in predictions:
         pretty_print(label, confidence)
@@ -39,18 +41,11 @@ def test_load():
     
 
 def test_eval_sound():
-    _, _, label_dict = get_data()
-    model = get_model()
+    ai = test_load(silent=True)
     record_name = "101_1b1_Al_sc_Meditron.wav"
-    label, conf = predict_sound(
-        p_join(DATA_PATH, record_name),
-        model,
-        label_dict
-        )
+    record_path = join(DATA_PATH, record_name)
+    label, conf = ai.predict_sound(record_path)
     pretty_print(label, conf)
-
-
-
 
 if __name__ == "__main__":
     test_eval_sound()

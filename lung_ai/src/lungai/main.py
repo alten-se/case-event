@@ -34,8 +34,8 @@ inspect_data()
 ai = AI(input_shape, n_classes)
 ai.label_dict = label_dict
 
-ai.train(train_set, validate_set)
-output_path = p_join(TRAINED_MODELS_PATH, "derp")
+ai.train(train_set, validate_set, epochs=200)
+output_path = p_join(TRAINED_MODELS_PATH, "latest")
 ai.save(output_path)
 
 print("Done!")
