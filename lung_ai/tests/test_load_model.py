@@ -10,7 +10,7 @@ tf.get_logger().setLevel('ERROR')
 from lungai.load_model import load_trained_model
 from lungai.data_extraction import get_data
 from lungai.paths import TRAINED_MODELS_PATH, DATA_PATH
-from lungai.evaluate import eval, eval_sound
+from lungai.evaluate import predict_one, predict_sound
 from lungai.clear import clear
 
 from lungai.model import AI
@@ -31,7 +31,7 @@ def test_load():
 
     test_inds = [0, 1]
 
-    predictions = [ eval(data_point, model, label_dict) for data_point in data[test_inds]]
+    predictions = [ predict_one(data_point, model, label_dict) for data_point in data[test_inds]]
     
     for label, confidence in predictions:
         pretty_print(label, confidence)
@@ -42,7 +42,7 @@ def test_eval_sound():
     _, _, label_dict = get_data()
     model = get_model()
     record_name = "101_1b1_Al_sc_Meditron.wav"
-    label, conf = eval_sound(
+    label, conf = predict_sound(
         p_join(DATA_PATH, record_name),
         model,
         label_dict

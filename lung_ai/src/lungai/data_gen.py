@@ -12,7 +12,7 @@ class DataGenerator(Sequence):
     __get_item__ Pads a batch of data to the same len before returning it
     """
 
-    def __init__(self, data_set: DataSet, batch_size=32, shuffle=False):
+    def __init__(self, data_set: DataSet, batch_size=32, shuffle=True):
         """Initialization
         :param list_IDs: list of all 'label' ids to use in the generator
         :param to_fit: True to return X and y, False to return X only
