@@ -2,19 +2,20 @@ import os
 
 from flask import Flask, render_template, request, jsonify
 from flask.helpers import redirect, url_for
-from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
-from lungai.tf_config import force_CPU
+from lungai.tf_config import force_CPU, silence_tf
 
 force_CPU()
+tf = silence_tf()
+
 
 from lungai.paths import TRAINED_MODELS_PATH
 
 from lungai.ai import AI
 
 
-ai = AI.load(os.path.join(TRAINED_MODELS_PATH, "derp"))
+ai = AI.load(os.path.join(TRAINED_MODELS_PATH, "dummy"))
 
 @app.route("/")
 def index():

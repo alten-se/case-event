@@ -1,8 +1,10 @@
-import requests
+import requests, os
 
+from lungai.paths import DATA_PATH
 
 url = "http://127.0.0.1:5000/api"
-file_path = "/home/gws/projects/case-event/lung_ai/db/data/101_1b1_Al_sc_Meditron.wav"
+file_name ="101_1b1_Al_sc_Meditron.wav"
+file_path = os.path.join(DATA_PATH, file_name)
 
 def test_api():
     with open(file_path, mode="rb") as file:
