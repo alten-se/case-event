@@ -1,29 +1,21 @@
 import os
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from flask.helpers import redirect, url_for
-from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
-from lungai.force_cpu import force_CPU
+from lungai.tf_config import force_CPU, silence_tf
 
 force_CPU()
+tf = silence_tf()
 
-from lungai.load_model import load_trained_model
+
 from lungai.paths import TRAINED_MODELS_PATH
-from lungai.evaluate import eval_sound
-from lungai.data_extraction import get_data
+
+from lungai.ai import AI
 
 
-
-
-from lungai.model import AI
-
-
-model = AI.load(os.path.join(TRAINED_MODELS_PATH, "dummy")).model
-_, _, label_dict = get_data()
-
-
+ai = AI.load(os.path.join(TRAINED_MODELS_PATH, "dummy"))
 
 @app.route("/")
 def index():
@@ -37,12 +29,23 @@ def upload():
 def uploader():
     if request.method == 'POST':
         f = request.files['file']
-        label, conf = eval_sound(f._file, model, label_dict)
+        label, conf = ai.predict_sound(f._file)
         # f.save(secure_filename(f.filename))
         return """
-AI Doctor: <br>
-    My diagnosis is: "{label}". <br>
-    im : {conf:.3%} confident of this""".format(label=label, conf=conf)
+                AI Doctor: <br>
+                    My diagnosis is: "{label}". <br>
+                    I'm : {conf:.3%} confident of this
+                """.format(label=label, conf=conf)
+
+@app.route("/api", methods=["POST"])
+def api():
+    f = request.files["file"]
+    label, conf = ai.predict_sound(f._file)
+    res = {
+        "label": label,
+        "confidence": "{:.3}".format(conf)
+    }
+    return jsonify(res)
 
 if __name__ == '__main__':
     app.run(debug = True)

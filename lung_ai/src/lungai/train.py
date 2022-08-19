@@ -2,10 +2,10 @@ import tensorflow as tf
 
 from keras.models import Sequential
 from keras.optimizers import Adam 
-from data_gen import DataGenerator
+from lungai.data_gen import DataGenerator
 
 
-def train(train_gen: DataGenerator, validate_gen: DataGenerator, model: Sequential) -> Sequential:
+def train(train_gen: DataGenerator, validate_gen: DataGenerator, model: Sequential, epochs = 3) -> Sequential:
     '''
         Training the Neural Network model against the data.
         Args:
@@ -16,7 +16,6 @@ def train(train_gen: DataGenerator, validate_gen: DataGenerator, model: Sequenti
     '''
     def get_lr_metric(optimizer):
         def lr(y_true, y_pred):
-            # I use ._decayed_lr method instead of .lr
             return optimizer._decayed_lr(tf.float32)
         return lr
 
@@ -29,5 +28,5 @@ def train(train_gen: DataGenerator, validate_gen: DataGenerator, model: Sequenti
         metrics=["accuracy", lr_metric]
     )
 
-    model.fit(train_gen, validation_data=validate_gen, epochs=200)
+    model.fit(train_gen, validation_data=validate_gen, epochs=epochs)
     return model
