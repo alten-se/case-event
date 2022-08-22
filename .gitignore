@@ -1,7 +1,7 @@
 #project specics
 data/
 *.zip
-trained_models/
+lung_ai/trained_models/*
 lung_ai/db/extract_cashe/*
 
 # Byte-compiled / optimized / DLL files
