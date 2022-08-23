@@ -1,0 +1,49 @@
+
+Event plan:
+    - Intro to alten
+    - Breif about RNN - 5 min
+    - lugnai
+        - Live DEMO, you can make this! 5min
+            - We make a stetoscope recording on sick teddy bear
+            - we use some kind of deployed ai, to give a diagnosis
+
+        - what kind functianlty want input/ouput
+
+    Tasks: 5 min
+        - setup
+        - Getting started / clone the repo
+        - run a preformance test
+
+            - make an mobile app
+            - task1 improve preformance
+            - classify something else
+
+    Drop the keyboard after 1 hour:
+    We look at what every one got.
+
+
+# deployment
+Have deceint ai_model deployed that one we will use for the DEMO
+And it will be used for mobile app dev. 
+Then when times up, we change to model to the most intressting one.
+
+
+- How reach out to students ideas:
+    - Poster
+    - use teachers, ask for help to reach students
+    - ask emir
+    - hand out free coffe
+
+
+- detailed during the event
+
+- plan for how to prepare
+    - RNN Breif, vish
+    - hosting solution
+    - prepare a number(4 maybe) of computers one for each team.
+    - make helper, to download database
+    - test stetoscope, with ai - vish
+    - prepare teddybear as dummy patient
+    - getting starting instruction
+    - write down Tasks for the students
+    - create Poster/invetations thingy
