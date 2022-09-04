@@ -92,7 +92,7 @@ class AI:
     def predict_sound(self, file: str):
         s_file = SoundFile(file, "r")
         mffcs = extract_mfccs(s_file)
-        return self.predict_one(mffcs.T)
+        return self.predict_one(mffcs)
 
     def train(self, train_set, validate_set = None, epochs = 3, **kwargs):   
         train_gen = DataGenerator(train_set, **kwargs)
