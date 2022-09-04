@@ -31,7 +31,7 @@ SRC_PATH = path_parrent(__file__)
 PACKAGE_PATH = path_parrent(__file__, 3)
 DB_PATH = join(PACKAGE_PATH, "db")
 DATA_PATH = join(DB_PATH, "data")
-TABLE_PATH = join(DB_PATH, "IBCHI_Challenge_diagnosis_v02.csv")
+DIAGNOSIS_PATH = join(DB_PATH, "IBCHI_Challenge_diagnosis_v02.csv")
 
 
 TRAINED_MODELS_PATH = join(PACKAGE_PATH, "trained_models")

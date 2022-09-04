@@ -7,10 +7,10 @@ import tensorflow as tf
 
 if len(tf.config.list_physical_devices("GPU")) > 0:
     print("CUDA enbabled GPU detected!")
-    from keras.layers import CuDNNLSTM as LSTM  
+    from keras.layers import CuDNNGRU as GRU  
 else:
     print("no cuda enbaled gpu, falling back to CPU")
-    from keras.layers import LSTM
+    from keras.layers import GRU 
 
 def rnn_model(input_shape: Tuple, n_classes: int) -> Sequential:
     """_summary_
@@ -23,7 +23,7 @@ def rnn_model(input_shape: Tuple, n_classes: int) -> Sequential:
     """
     model = Sequential()
 
-    model.add(LSTM(
+    model.add(GRU(
         128,
         input_shape=input_shape,
         return_sequences=True
@@ -31,16 +31,16 @@ def rnn_model(input_shape: Tuple, n_classes: int) -> Sequential:
 
     model.add(Dropout(0.2))
 
-    model.add(LSTM(128, return_sequences=True))
+    model.add(GRU(128, return_sequences=True))
     model.add(Dropout(0.2))
 
-    model.add(LSTM(128, return_sequences=True))
+    model.add(GRU(128, return_sequences=True))
     model.add(Dropout(0.2))
 
-    model.add(LSTM(128, return_sequences=True))
+    model.add(GRU(128, return_sequences=True))
     model.add(Dropout(0.2))
 
-    model.add(LSTM(128, return_sequences=False))
+    model.add(GRU(128, return_sequences=False))
     model.add(Dropout(0.2))
 
     model.add(Dense(32, activation="relu"))
