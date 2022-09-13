@@ -17,4 +17,4 @@ COPY . .
 RUN pip3 install -e lung_ai/
 
 
-CMD ["python3", "-m", "flask", "--app", "flask_app/app.py","run", "--host=0.0.0.0"]
+CMD ["python3", "-m", "flask", "--app", "flask_app/app.py","run", "--host=0.0.0.0", "--port=8080"]
