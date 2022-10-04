@@ -8,7 +8,7 @@ import os, pickle
 import numpy as np
 from soundfile import SoundFile
 
-from lungai.model import rnn_model
+from lungai.model import functional_model
 from lungai.data_extraction import extract_mfccs
 from lungai.data_gen import DataGenerator
 from lungai.train import train
@@ -20,7 +20,7 @@ class AI:
     """
 
     def __init__(self, input_shape, n_classes) -> None:
-        self.model = rnn_model(input_shape, n_classes)
+        self.model = functional_model(input_shape, n_classes)
         self.io_shape = (input_shape, n_classes)
         self.label_dict: Optional[Dict] = None
 
