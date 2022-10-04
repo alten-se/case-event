@@ -3,10 +3,6 @@ import numpy as np
 import pandas as pd
 from os.path import join as p_join
 
-from lungai.tf_config import force_CPU
-
-force_CPU()
-
 from lungai.data_cashe import get_data
 from lungai.data_split import split_data
 from lungai.paths import TRAINED_MODELS_PATH
